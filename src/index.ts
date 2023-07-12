@@ -1,4 +1,4 @@
-import { pdfUpload } from "./utils";
+import { pdfUpload, cerUpload } from "./utils";
 import { FileInput } from "./UploadButton";
 
-export { FileInput, pdfUpload };
+export { FileInput, pdfUpload, cerUpload };

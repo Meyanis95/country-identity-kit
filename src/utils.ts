@@ -1,34 +1,41 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
+import * as peculiarX509 from "@peculiar/x509";
 
 export const pdfUpload = (e: ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files) {
-    try {
-      const fileReader = new FileReader();
-      fileReader.readAsBinaryString(e.target.files[0]);
-      const userFilename = e.target.files[0].name;
-      fileReader.onload = (e) => {
-        if (e.target) {
-          console.log("OkOk");
-          try {
-            const { signedData, signature, ByteRange } = extractSignature(
-              Buffer.from(e.target.result as string, "binary")
-            );
-            console.log("Data extracted from PDF: ", signedData, signature);
-            if (signature != "") {
-              const signatureExp = (window as any).forge.asn1.fromDer(signature)
-                .value as string;
-              return { signatureExp, signedData };
+  return new Promise((resolve, reject) => {
+    if (e.target.files) {
+      try {
+        const fileReader = new FileReader();
+        fileReader.readAsBinaryString(e.target.files[0]);
+        const userFilename = e.target.files[0].name;
+        fileReader.onload = (e) => {
+          if (e.target) {
+            try {
+              const { signedData, signature, ByteRange } = extractSignature(
+                Buffer.from(e.target.result as string, "binary")
+              );
+              console.log("Data extracted from PDF: ", signedData, signature);
+              resolve({ signature, signedData });
+
+              // if (signature != "") {
+              //   // const signatureExp = (window as any).forge.asn1.fromDer(signature)
+              //   //   .value as string;
+              //   // console.log("sig after: ", signatureExp);
+              // }
+            } catch (error) {
+              //setpdfStatus("error");
+              console.log(error);
+              reject(error);
             }
-          } catch (error) {
-            //setpdfStatus("error");
           }
-        }
-      };
-    } catch {
-      // setpdfStatus("");
-      // setsignatureValidity("");
+        };
+      } catch {
+        // setpdfStatus("");
+        // setsignatureValidity("");
+        reject();
+      }
     }
-  }
+  });
 };
 
 /**
@@ -85,4 +92,59 @@ const getSubstringIndex = (str: Buffer, substring: string, n: number) => {
   }
 
   return index;
+};
+
+export const cerUpload = async (
+  e: ChangeEvent<HTMLInputElement>,
+  signedPdfData: Buffer,
+  signature: string
+) => {
+  if (e.target.files) {
+    try {
+      const fileReader = new FileReader();
+      fileReader.readAsArrayBuffer(e.target.files[0]);
+      const userFilename = e.target.files[0].name;
+      fileReader.onload = (e) => {
+        if (e.target) {
+          try {
+            const cer = new peculiarX509.X509Certificate(
+              e.target.result as Buffer
+            );
+            // setx509Certificate(cer);
+            // (window as any) to avoid typescript complaining
+            const cert = (window as any).forge.pki.certificateFromPem(
+              cer.toString("pem")
+            );
+
+            const md = (window as any).forge.md.sha1.create();
+            md.update(signedPdfData.toString("binary")); // defaults to raw encoding
+
+            const decryptData = Buffer.from(
+              cert.publicKey.encrypt(signature, "RAW"),
+              "binary"
+            );
+            const hash = Buffer.from(md.digest().bytes(), "binary");
+
+            const isValid =
+              Buffer.compare(decryptData.subarray(236, 256), hash) === 0;
+            console.log("Is valid? ", isValid);
+            if (isValid) {
+              const msgBigInt = BigInt("0x" + hash.toString("hex"));
+              const sigBigInt = BigInt(
+                "0x" + Buffer.from(signature, "binary").toString("hex")
+              );
+              const modulusBigInt = BigInt(
+                "0x" + cert.publicKey.n.toString(16)
+              );
+              return { msgBigInt, sigBigInt, modulusBigInt };
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };

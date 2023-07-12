@@ -12,6 +12,7 @@
   "author": "Yanis Meziane for PSE",
   "license": "MIT",
   "dependencies": {
+    "@peculiar/x509": "^1.9.3",
     "@types/node": "^20.4.1",
     "@types/react": "^18.2.14",
     "react": "^18.2.0",
