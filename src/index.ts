@@ -1,4 +1,4 @@
-//import { pdfUpload } from "./utils";
+import { pdfUpload } from "./utils";
 import { FileInput } from "./UploadButton";
 
-export { FileInput };
+export { FileInput, pdfUpload };
