@@ -2,7 +2,7 @@
   "name": "country-identity-kit",
   "version": "0.0.1",
   "description": "Frontend component kit for the country identity pcd package",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.ts --dts",
@@ -15,6 +15,7 @@
     "@types/node": "^20.4.1",
     "@types/react": "^18.2.14",
     "react": "^18.2.0",
+    "ts-node": "^10.9.1",
     "tsup": "^7.1.0",
     "typescript": "^5.1.6"
   }
