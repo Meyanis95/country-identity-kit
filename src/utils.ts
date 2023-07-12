@@ -1,7 +1,10 @@
 import { ChangeEvent } from "react";
 import * as peculiarX509 from "@peculiar/x509";
+import * as forge from "node-forge";
 
-export const pdfUpload = (e: ChangeEvent<HTMLInputElement>) => {
+export const pdfUpload = (
+  e: ChangeEvent<HTMLInputElement>
+): Promise<{ signature: string; signedData: Buffer }> => {
   return new Promise((resolve, reject) => {
     if (e.target.files) {
       try {
@@ -14,14 +17,14 @@ export const pdfUpload = (e: ChangeEvent<HTMLInputElement>) => {
               const { signedData, signature, ByteRange } = extractSignature(
                 Buffer.from(e.target.result as string, "binary")
               );
-              console.log("Data extracted from PDF: ", signedData, signature);
-              resolve({ signature, signedData });
 
-              // if (signature != "") {
-              //   // const signatureExp = (window as any).forge.asn1.fromDer(signature)
-              //   //   .value as string;
-              //   // console.log("sig after: ", signatureExp);
-              // }
+              if (signature != "") {
+                resolve({
+                  signature: (forge as any).asn1.fromDer(signature)
+                    .value as string,
+                  signedData,
+                });
+              }
             } catch (error) {
               //setpdfStatus("error");
               console.log(error);
@@ -98,53 +101,56 @@ export const cerUpload = async (
   e: ChangeEvent<HTMLInputElement>,
   signedPdfData: Buffer,
   signature: string
-) => {
-  if (e.target.files) {
-    try {
-      const fileReader = new FileReader();
-      fileReader.readAsArrayBuffer(e.target.files[0]);
-      const userFilename = e.target.files[0].name;
-      fileReader.onload = (e) => {
-        if (e.target) {
-          try {
-            const cer = new peculiarX509.X509Certificate(
-              e.target.result as Buffer
-            );
-            // setx509Certificate(cer);
-            // (window as any) to avoid typescript complaining
-            const cert = (window as any).forge.pki.certificateFromPem(
-              cer.toString("pem")
-            );
-
-            const md = (window as any).forge.md.sha1.create();
-            md.update(signedPdfData.toString("binary")); // defaults to raw encoding
-
-            const decryptData = Buffer.from(
-              cert.publicKey.encrypt(signature, "RAW"),
-              "binary"
-            );
-            const hash = Buffer.from(md.digest().bytes(), "binary");
-
-            const isValid =
-              Buffer.compare(decryptData.subarray(236, 256), hash) === 0;
-            console.log("Is valid? ", isValid);
-            if (isValid) {
-              const msgBigInt = BigInt("0x" + hash.toString("hex"));
-              const sigBigInt = BigInt(
-                "0x" + Buffer.from(signature, "binary").toString("hex")
+): Promise<{ msgBigInt: bigint; sigBigInt: bigint; modulusBigInt: bigint }> => {
+  return new Promise((resolve, reject) => {
+    if (e.target.files) {
+      try {
+        const fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(e.target.files[0]);
+        const userFilename = e.target.files[0].name;
+        fileReader.onload = (e) => {
+          if (e.target) {
+            try {
+              const cer = new peculiarX509.X509Certificate(
+                e.target.result as Buffer
               );
-              const modulusBigInt = BigInt(
-                "0x" + cert.publicKey.n.toString(16)
+
+              // setx509Certificate(cer);
+              // (window as any) to avoid typescript complaining
+              const cert = (forge as any).pki.certificateFromPem(
+                cer.toString("pem")
               );
-              return { msgBigInt, sigBigInt, modulusBigInt };
+
+              const md = (forge as any).md.sha1.create();
+              md.update(signedPdfData.toString("binary")); // defaults to raw encoding
+
+              const decryptData = Buffer.from(
+                cert.publicKey.encrypt(signature, "RAW"),
+                "binary"
+              );
+              const hash = Buffer.from(md.digest().bytes(), "binary");
+
+              const isValid =
+                Buffer.compare(decryptData.subarray(236, 256), hash) === 0;
+              console.log("Is valid? ", isValid);
+              if (isValid) {
+                const msgBigInt = BigInt("0x" + hash.toString("hex"));
+                const sigBigInt = BigInt(
+                  "0x" + Buffer.from(signature, "binary").toString("hex")
+                );
+                const modulusBigInt = BigInt(
+                  "0x" + cert.publicKey.n.toString(16)
+                );
+                resolve({ msgBigInt, sigBigInt, modulusBigInt });
+              }
+            } catch (error) {
+              reject(error);
             }
-          } catch (error) {
-            console.log(error);
           }
-        }
-      };
-    } catch (error) {
-      console.log(error);
+        };
+      } catch (error) {
+        reject(error);
+      }
     }
-  }
+  });
 };
