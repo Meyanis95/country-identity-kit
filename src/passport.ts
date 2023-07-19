@@ -8,14 +8,15 @@ import {
 } from "@pcd/passport-interface";
 import { IdentityPCDPackage } from "pcd-country-identity";
 import { ArgumentTypeName } from "@pcd/pcd-types";
+import { useEffect } from "react";
 
 export const ZUPASS_URL = "http://localhost:3000/";
 
-export function requestIdentitypProof(
-  debug: boolean,
-  proveOnServer: boolean,
-  args: { msgBigInt: bigint; sigBigInt: bigint; modulusBigInt: bigint }
-) {
+export function requestIdentitypProof(args: {
+  msgBigInt: bigint;
+  sigBigInt: bigint;
+  modulusBigInt: bigint;
+}) {
   const popupUrl = "http://localhost:3001/popup";
   const proofUrl = constructPassportPcdProveAndAddRequestUrl<
     typeof IdentityPCDPackage
@@ -53,10 +54,26 @@ export function requestIdentitypProof(
       genericProveScreen: true,
       description: "Generate a proof of identity using your Aadhaar card.",
       title: "Identity Proof",
-      debug: debug,
-      proveOnServer: proveOnServer,
     }
   );
 
   openPassportPopup(popupUrl, proofUrl);
+}
+
+export function useIdentityProof(
+  pcdStr: string,
+  onVerified: (valid: boolean) => void
+) {
+  const identityPCD = useSerializedPCD(IdentityPCDPackage, pcdStr);
+
+  useEffect(() => {
+    if (identityPCD) {
+      const { verify } = IdentityPCDPackage;
+      verify(identityPCD).then(onVerified);
+    }
+  }, [identityPCD, onVerified]);
+
+  return {
+    proof: identityPCD?.proof,
+  };
 }

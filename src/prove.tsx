@@ -13,7 +13,7 @@ export const ProvingButton = ({
     <button
       onClick={() => {
         if (msgBigInt && modulusBigInt && sigBigInt) {
-          requestIdentitypProof(false, false, {
+          requestIdentitypProof({
             msgBigInt,
             modulusBigInt,
             sigBigInt,
