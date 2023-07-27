@@ -132,7 +132,7 @@ export const cerUpload = async (
 
               const isValid =
                 Buffer.compare(decryptData.subarray(236, 256), hash) === 0;
-              console.log("Is valid? ", isValid);
+
               if (isValid) {
                 const msgBigInt = BigInt("0x" + hash.toString("hex"));
                 const sigBigInt = BigInt(
