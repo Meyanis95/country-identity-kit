@@ -14,7 +14,7 @@ export function requestIdentitypProof(args: {
   sigBigInt: bigint;
   modulusBigInt: bigint;
 }) {
-  const popupUrl = "http://localhost:3001/popup";
+  const popupUrl = window.location.origin + "/popup";
   const proofUrl = constructPassportPcdProveAndAddRequestUrl<
     typeof IdentityPCDPackage
   >(
@@ -45,7 +45,6 @@ export function requestIdentitypProof(args: {
       genericProveScreen: true,
       description: "Generate a proof of identity using your Aadhaar card.",
       title: "Identity Proof",
-      proveOnServer: true,
     }
   );
 

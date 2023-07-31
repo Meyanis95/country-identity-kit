@@ -1,6 +1,6 @@
 import { requestIdentitypProof } from "./passport";
 
-export const ProvingButton = ({
+export const OpenPassportRequest = ({
   msgBigInt,
   modulusBigInt,
   sigBigInt,

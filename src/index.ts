@@ -1,13 +1,19 @@
 import { pdfUpload, cerUpload } from "./utils";
 import { FileInput } from "./UploadButton";
-import { ProvingButton } from "./prove";
+import { OpenPassportRequest } from "./ProveWithPassport";
 import { useIdentityProof, requestIdentitypProof } from "./passport";
+import { ProveButton } from "./ProveButton";
+import { OpenModal } from "./OpenModalButton";
+import { useLoadingSpinner } from "./useLoadingSpinner";
 
 export {
   FileInput,
   pdfUpload,
   cerUpload,
-  ProvingButton,
+  OpenPassportRequest,
   useIdentityProof,
   requestIdentitypProof,
+  ProveButton,
+  OpenModal,
+  useLoadingSpinner,
 };
