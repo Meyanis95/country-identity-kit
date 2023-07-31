@@ -1,4 +1,4 @@
-import { requestIdentitypProof } from "./passport";
+import { requestIdentitypProof } from "../passport";
 
 export const OpenPassportRequest = ({
   msgBigInt,

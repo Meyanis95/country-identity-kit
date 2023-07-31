@@ -1,10 +1,10 @@
 import { pdfUpload, cerUpload } from "./utils";
-import { FileInput } from "./UploadButton";
-import { OpenPassportRequest } from "./ProveWithPassport";
+import { FileInput } from "./components/UploadButton";
+import { OpenPassportRequest } from "./components/ProveWithPassport";
 import { useIdentityProof, requestIdentitypProof } from "./passport";
-import { ProveButton } from "./ProveButton";
-import { OpenModal } from "./OpenModalButton";
-import { useLoadingSpinner } from "./useLoadingSpinner";
+import { ProveButton } from "./components/ProveButton";
+import { OpenModal } from "./components/OpenModalButton";
+import { Spinner } from "./components/LoadingSpinner";
 
 export {
   FileInput,
@@ -15,5 +15,5 @@ export {
   requestIdentitypProof,
   ProveButton,
   OpenModal,
-  useLoadingSpinner,
+  Spinner,
 };

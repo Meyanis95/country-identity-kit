@@ -1,4 +1,4 @@
-import { proveWithWebProver } from "./prove";
+import { proveWithWebProver } from "../prove";
 import { IdentityPCDArgs } from "pcd-country-identity";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import styled from "styled-components";

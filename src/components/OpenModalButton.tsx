@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "./ProveModal";
 import { FileInput } from "./UploadButton";
 import { ProveButton } from "./ProveButton";
-import { pdfUpload, cerUpload } from "./utils";
+import { pdfUpload, cerUpload } from "../utils";
 
 export const OpenModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
