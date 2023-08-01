@@ -1,7 +1,8 @@
 import { proveWithWebProver } from "../prove";
 import { IdentityPCDArgs } from "pcd-country-identity";
-import { ArgumentTypeName } from "@pcd/pcd-types";
+import { ArgumentTypeName, SerializedPCD, PCD } from "@pcd/pcd-types";
 import styled from "styled-components";
+import { useCallback } from "react";
 
 export const ProveButton = ({
   msgBigInt,
@@ -35,11 +36,18 @@ export const ProveButton = ({
     },
   };
 
+  const onProve = (pcd: any, serializedPcd: SerializedPCD) => {
+    const onProve = useCallback(
+      async (_pcd: PCD, serialized: SerializedPCD) => {},
+      []
+    );
+  };
+
   return (
     <Btn
       disabled={!validInputs}
       onClick={async () => {
-        await proveWithWebProver(args);
+        await proveWithWebProver(args, onProve);
       }}
     >
       Request Identity Proof
@@ -60,9 +68,10 @@ const Btn = styled.button`
   border-radius: 0.5rem;
   background: linear-gradient(345deg, #10fe53 0%, #09d3ff 100%);
 
-  /* &:hover {
-    background: #fafafa;
-  } */
+  &:hover {
+    opacity: 70%;
+    background: linear-gradient(345deg, #10fe53 0%, #09d3ff 100%);
+  }
 
   &:active {
     background: #f8f8f8;

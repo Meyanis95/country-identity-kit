@@ -4,10 +4,12 @@ export const OpenPassportRequest = ({
   msgBigInt,
   modulusBigInt,
   sigBigInt,
+  validInputs,
 }: {
   msgBigInt: bigint;
   modulusBigInt: bigint;
   sigBigInt: bigint;
+  validInputs: boolean;
 }) => {
   return (
     <button
@@ -20,7 +22,7 @@ export const OpenPassportRequest = ({
           });
         }
       }}
-      //   disabled={valid}
+      disabled={validInputs}
     >
       Request Identity Proof
     </button>

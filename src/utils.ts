@@ -1,9 +1,21 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import * as peculiarX509 from "@peculiar/x509";
 import * as forge from "node-forge";
+import {
+  AdhaarPdfValidation,
+  AdhaarSignatureValidition,
+  AdhaarCertificateValidation,
+} from "./interface";
 
+/**
+ * Handle the upload of the pdf, extract the signature and the signed data.
+ * @param pdf pdf buffer
+ * @returns {Signature, signedData}
+ */
 export const pdfUpload = (
-  e: ChangeEvent<HTMLInputElement>
+  e: ChangeEvent<HTMLInputElement>,
+  setpdfStatus: Dispatch<SetStateAction<"" | AdhaarPdfValidation>>,
+  setsignatureValidity: Dispatch<SetStateAction<"" | AdhaarSignatureValidition>>
 ): Promise<{ signature: string; signedData: Buffer }> => {
   return new Promise((resolve, reject) => {
     if (e.target.files) {
@@ -24,17 +36,19 @@ export const pdfUpload = (
                     .value as string,
                   signedData,
                 });
+                setpdfStatus(AdhaarPdfValidation.SIGNATURE_PRESENT);
+              } else {
+                setpdfStatus(AdhaarPdfValidation.SIGNATURE_NOT_PRESENT);
               }
             } catch (error) {
-              //setpdfStatus("error");
-              console.log(error);
+              setpdfStatus(AdhaarPdfValidation.ERROR_PARSING_PDF);
               reject(error);
             }
           }
         };
       } catch {
-        // setpdfStatus("");
-        // setsignatureValidity("");
+        setpdfStatus("");
+        setsignatureValidity("");
         reject();
       }
     }
@@ -97,10 +111,22 @@ const getSubstringIndex = (str: Buffer, substring: string, n: number) => {
   return index;
 };
 
+/**
+ * Handle the upload of the certification, extract the message, the signature and the modulus.
+ * @param pdf pdf buffer
+ * @param signedPdfData signed data attached to the pdf
+ * @param signature the signature attached to the aadhaar card
+ * @returns {msgBigInt, sigBigInt, modulusBigInt}
+ */
 export const cerUpload = async (
   e: ChangeEvent<HTMLInputElement>,
   signedPdfData: Buffer,
-  signature: string
+  signature: string,
+  pdfStatus: "" | AdhaarPdfValidation,
+  setcertificateStatus: Dispatch<
+    SetStateAction<"" | AdhaarCertificateValidation>
+  >,
+  setsignatureValidity: Dispatch<SetStateAction<"" | AdhaarSignatureValidition>>
 ): Promise<{ msgBigInt: bigint; sigBigInt: bigint; modulusBigInt: bigint }> => {
   return new Promise((resolve, reject) => {
     if (e.target.files) {
@@ -109,7 +135,7 @@ export const cerUpload = async (
         fileReader.readAsArrayBuffer(e.target.files[0]);
         const userFilename = e.target.files[0].name;
         fileReader.onload = (e) => {
-          if (e.target) {
+          if (e.target && pdfStatus == AdhaarPdfValidation.SIGNATURE_PRESENT) {
             try {
               const cer = new peculiarX509.X509Certificate(
                 e.target.result as Buffer
@@ -141,15 +167,36 @@ export const cerUpload = async (
                 const modulusBigInt = BigInt(
                   "0x" + cert.publicKey.n.toString(16)
                 );
+                setsignatureValidity(AdhaarSignatureValidition.SIGNATURE_VALID);
+                setcertificateStatus(
+                  AdhaarCertificateValidation.CERTIFICATE_CORRECTLY_FORMATTED
+                );
                 resolve({ msgBigInt, sigBigInt, modulusBigInt });
+              } else {
+                setsignatureValidity(
+                  AdhaarSignatureValidition.SIGNATURE_INVALID
+                );
+                setcertificateStatus(
+                  AdhaarCertificateValidation.CERTIFICATE_CORRECTLY_FORMATTED
+                );
+                reject();
               }
             } catch (error) {
-              reject(error);
+              setsignatureValidity(AdhaarSignatureValidition.SIGNATURE_INVALID);
+              setcertificateStatus(
+                AdhaarCertificateValidation.ERROR_PARSING_CERTIFICATE
+              );
+              reject();
             }
+          } else {
+            setcertificateStatus(AdhaarCertificateValidation.NO_PDF_UPLOADED);
+            reject();
           }
         };
       } catch (error) {
-        reject(error);
+        setsignatureValidity(AdhaarSignatureValidition.SIGNATURE_INVALID);
+        setcertificateStatus("");
+        reject();
       }
     }
   });
