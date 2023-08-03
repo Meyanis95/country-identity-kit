@@ -21,12 +21,10 @@ export const Spinner = () => {
 };
 
 const SpinnerStyle = styled.div`
-  font-size: 3rem; /* Adjust the font size to make the emoji bigger */
+  font-size: 1rem; /* Adjust the font size to make the emoji bigger */
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px; /* Set the height and width to make a square container */
-  width: 100px;
 `;
 
 const Emoji = styled.div`

@@ -201,3 +201,8 @@ export const cerUpload = async (
     }
   });
 };
+
+export function text(emoji: string, text: string) {
+  const msp = "\u2003"; // 1em space
+  return `${emoji}${msp}${text}`;
+}

@@ -5,6 +5,9 @@ import { useIdentityProof, requestIdentitypProof } from "./passport";
 import { ProveButton } from "./components/ProveButton";
 import { LogInWithCountryIdentity } from "./components/OpenModalButton";
 import { Spinner } from "./components/LoadingSpinner";
+import { useCountryIdentity } from "./useCountryIdentity";
+import { CountryIdentityProvider } from "./countryIdentityProvider";
+import { CollapsableCode } from "./components/Core";
 
 export {
   FileInput,
@@ -16,4 +19,7 @@ export {
   ProveButton,
   LogInWithCountryIdentity,
   Spinner,
+  useCountryIdentity,
+  CountryIdentityProvider,
+  CollapsableCode,
 };

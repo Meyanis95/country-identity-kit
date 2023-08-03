@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { FileInput } from "./UploadButton";
 import { ProveButton } from "./ProveButton";
@@ -8,14 +8,18 @@ import {
   AdhaarSignatureValidition,
   AdhaarCertificateValidation,
 } from "../interface";
-import Logo from "./blur.svg";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+export const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  setIsModalOpen,
+}) => {
   const [signedPdfData, setSignedPdfData] = useState(Buffer.from([]));
   const [signature, setSignature] = useState("");
   const [msgBigInt, setMsgBigInt] = useState<bigint>();
@@ -80,20 +84,24 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         </TitleSection>
 
         <UploadSection>
-          <FileInput onChange={handlePdfChange} />
-          {pdfStatus}
-        </UploadSection>
+          <UploadFile>
+            <Label>Upload your Aadhaar card pdf</Label>
+            <FileInput onChange={handlePdfChange} />
+            <DocumentResult>{pdfStatus}</DocumentResult>
+          </UploadFile>
 
-        <UploadSection>
-          <FileInput onChange={handleCerUpload} />
-          {certificateOrSignatureStatus}
+          <UploadFile>
+            <Label>Upload your Aadhaar card certification</Label>
+            <FileInput onChange={handleCerUpload} />
+            <DocumentResult>{certificateOrSignatureStatus}</DocumentResult>
+          </UploadFile>
         </UploadSection>
-
         <ProveButton
           sigBigInt={sigBigInt}
           modulusBigInt={modulusBigInt}
           msgBigInt={msgBigInt}
           validInputs={validInputs}
+          setIsModalOpen={setIsModalOpen}
         />
       </ModalContent>
     </ModalOverlay>
@@ -146,13 +154,33 @@ const ModalContent = styled.div`
   }
 `;
 
-const UploadSection = styled.div`
+const UploadFile = styled.div`
   margin-top: 10px;
   margin-bottom: 10px;
+`;
+
+const DocumentResult = styled.div`
+  position: absolute;
+  font-size: 0.875rem;
+  margin-top: 4px;
 `;
 
 const TitleSection = styled.div`
   flex-shrink: 0;
   margin-left: auto;
   margin-right: auto;
+  font-size: medium;
+  font-weight: bold;
+`;
+
+const UploadSection = styled.div`
+  display: grid;
+  row-gap: 20px;
+`;
+
+const Label = styled.div`
+  margin-bottom: 0.5rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: #111827;
 `;

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Modal } from "./ProveModal";
 import styled from "styled-components";
+import { text } from "../utils";
 
 export const LogInWithCountryIdentity = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -18,7 +19,11 @@ export const LogInWithCountryIdentity = () => {
       <Btn onClick={openModal}>
         {text("🌏", "Log In with Country Identity")}
       </Btn>
-      <Modal isOpen={isModalOpen} onClose={closeModal}></Modal>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        setIsModalOpen={setIsModalOpen}
+      ></Modal>
     </div>
   );
 };
@@ -51,8 +56,3 @@ const Btn = styled.button`
     cursor: default;
   }
 `;
-
-function text(emoji: string, text: string) {
-  const msp = "\u2003"; // 1em space
-  return `${emoji}${msp}${text}`;
-}

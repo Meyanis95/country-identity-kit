@@ -1,20 +1,32 @@
-import { proveWithWebProver } from "../prove";
 import { IdentityPCDArgs } from "pcd-country-identity";
-import { ArgumentTypeName, SerializedPCD, PCD } from "@pcd/pcd-types";
+import { ArgumentTypeName } from "@pcd/pcd-types";
 import styled from "styled-components";
-import { useCallback } from "react";
+import { useContext, useEffect, Dispatch, SetStateAction } from "react";
+import {
+  CountryIdentityContext,
+  CountryIdentityState,
+} from "../useCountryIdentity";
+import { Spinner } from "./LoadingSpinner";
 
 export const ProveButton = ({
   msgBigInt,
   modulusBigInt,
   sigBigInt,
   validInputs,
+  setIsModalOpen,
 }: {
   msgBigInt?: bigint;
   modulusBigInt?: bigint;
   sigBigInt?: bigint;
   validInputs: boolean;
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { state, startReq } = useContext(CountryIdentityContext);
+
+  useEffect(() => {
+    if (state.status === "logged-in") setIsModalOpen(false);
+  });
+
   const args: IdentityPCDArgs = {
     base_message: {
       argumentType: ArgumentTypeName.BigInt,
@@ -36,26 +48,35 @@ export const ProveButton = ({
     },
   };
 
-  const onProve = (pcd: any, serializedPcd: SerializedPCD) => {
-    const onProve = useCallback(
-      async (_pcd: PCD, serialized: SerializedPCD) => {},
-      []
-    );
-  };
-
-  return (
-    <Btn
-      disabled={!validInputs}
-      onClick={async () => {
-        await proveWithWebProver(args, onProve);
-      }}
-    >
-      Request Identity Proof
-    </Btn>
-  );
+  return (() => {
+    switch (state.status) {
+      case "logged-out":
+        return (
+          <Btn
+            disabled={!validInputs}
+            onClick={() => {
+              startReq({ type: "login", args });
+            }}
+          >
+            Request Identity Proof
+          </Btn>
+        );
+      case "logging-in":
+        return (
+          <Btn>
+            Generating proof...
+            {"\u2003"}
+            <Spinner />
+          </Btn>
+        );
+    }
+  })();
 };
 
 const Btn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.5rem 1rem;
   font-size: 1rem;
   cursor: pointer;
