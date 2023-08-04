@@ -3,10 +3,10 @@ import {
   CountryIdentityContext,
   CountryIdentityRequest,
   CountryIdentityState,
-} from "./useCountryIdentity";
+} from "../hooks/useCountryIdentity";
 import { IdentityPCD, IdentityPCDPackage } from "pcd-country-identity";
 import React from "react";
-import { proveWithWebProver } from "./prove";
+import { proveWithWebProver } from "../prove";
 import { SerializedPCD } from "@pcd/pcd-types";
 
 export function CountryIdentityProvider(props: { children: ReactNode }) {
@@ -199,7 +199,6 @@ async function handleLogin(
     );
     return null;
   }
-  //   const serializedPCD = JSON.parse(pcdStr) as SerializedPCD;
 
   console.log(`[COUNTRY-IDENTITY] verifying ${pcdStr.type}`);
 

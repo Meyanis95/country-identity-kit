@@ -1,31 +1,25 @@
 import { IdentityPCDArgs } from "pcd-country-identity";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import styled from "styled-components";
-import { useContext, useEffect, Dispatch, SetStateAction } from "react";
-import {
-  CountryIdentityContext,
-  CountryIdentityState,
-} from "../useCountryIdentity";
+import { useContext } from "react";
+import { CountryIdentityContext } from "../hooks/useCountryIdentity";
 import { Spinner } from "./LoadingSpinner";
+import { AdhaarSignatureValidition } from "../interface";
 
-export const ProveButton = ({
-  msgBigInt,
-  modulusBigInt,
-  sigBigInt,
-  validInputs,
-  setIsModalOpen,
-}: {
+interface ProveButtonProps {
   msgBigInt?: bigint;
   modulusBigInt?: bigint;
   sigBigInt?: bigint;
-  validInputs: boolean;
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  signatureValidity: "" | AdhaarSignatureValidition;
+}
+
+export const ProveButton: React.FC<ProveButtonProps> = ({
+  msgBigInt,
+  modulusBigInt,
+  sigBigInt,
+  signatureValidity,
 }) => {
   const { state, startReq } = useContext(CountryIdentityContext);
-
-  useEffect(() => {
-    if (state.status === "logged-in") setIsModalOpen(false);
-  });
 
   const args: IdentityPCDArgs = {
     base_message: {
@@ -53,7 +47,9 @@ export const ProveButton = ({
       case "logged-out":
         return (
           <Btn
-            disabled={!validInputs}
+            disabled={
+              !(signatureValidity == AdhaarSignatureValidition.SIGNATURE_VALID)
+            }
             onClick={() => {
               startReq({ type: "login", args });
             }}

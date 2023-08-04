@@ -1,24 +1,10 @@
-import { pdfUpload, cerUpload } from "./utils";
-import { FileInput } from "./components/UploadButton";
-import { OpenPassportRequest } from "./components/ProveWithPassport";
-import { useIdentityProof, requestIdentitypProof } from "./passport";
-import { ProveButton } from "./components/ProveButton";
-import { LogInWithCountryIdentity } from "./components/OpenModalButton";
-import { Spinner } from "./components/LoadingSpinner";
-import { useCountryIdentity } from "./useCountryIdentity";
-import { CountryIdentityProvider } from "./countryIdentityProvider";
+import { LogInWithCountryIdentity } from "./components/LogInWithCountryIdentityButton";
+import { useCountryIdentity } from "./hooks/useCountryIdentity";
+import { CountryIdentityProvider } from "./provider/countryIdentityProvider";
 import { CollapsableCode } from "./components/Core";
 
 export {
-  FileInput,
-  pdfUpload,
-  cerUpload,
-  OpenPassportRequest,
-  useIdentityProof,
-  requestIdentitypProof,
-  ProveButton,
   LogInWithCountryIdentity,
-  Spinner,
   useCountryIdentity,
   CountryIdentityProvider,
   CollapsableCode,

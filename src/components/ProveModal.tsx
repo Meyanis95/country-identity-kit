@@ -2,7 +2,7 @@ import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { FileInput } from "./UploadButton";
 import { ProveButton } from "./ProveButton";
-import { pdfUpload, cerUpload } from "../utils";
+import { pdfUpload, cerUpload } from "../util";
 import {
   AdhaarPdfValidation,
   AdhaarSignatureValidition,
@@ -12,20 +12,14 @@ import {
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  setIsModalOpen,
-}) => {
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [signedPdfData, setSignedPdfData] = useState(Buffer.from([]));
   const [signature, setSignature] = useState("");
   const [msgBigInt, setMsgBigInt] = useState<bigint>();
   const [sigBigInt, setSigBigInt] = useState<bigint>();
   const [modulusBigInt, setModulusBigInt] = useState<bigint>();
-  const [validInputs, setValidInputs] = useState<boolean>(false);
   const [pdfStatus, setpdfStatus] = useState<"" | AdhaarPdfValidation>("");
   const [signatureValidity, setsignatureValidity] = useState<
     "" | AdhaarSignatureValidition
@@ -33,16 +27,6 @@ export const Modal: React.FC<ModalProps> = ({
   const [certificateStatus, setcertificateStatus] = useState<
     "" | AdhaarCertificateValidation
   >("");
-
-  useEffect(() => {
-    if (
-      sigBigInt !== undefined &&
-      modulusBigInt !== undefined &&
-      msgBigInt !== undefined
-    ) {
-      setValidInputs(true);
-    }
-  }, [sigBigInt, modulusBigInt, msgBigInt]);
 
   const certificateOrSignatureStatus =
     certificateStatus ==
@@ -100,8 +84,7 @@ export const Modal: React.FC<ModalProps> = ({
           sigBigInt={sigBigInt}
           modulusBigInt={modulusBigInt}
           msgBigInt={msgBigInt}
-          validInputs={validInputs}
-          setIsModalOpen={setIsModalOpen}
+          signatureValidity={signatureValidity}
         />
       </ModalContent>
     </ModalOverlay>

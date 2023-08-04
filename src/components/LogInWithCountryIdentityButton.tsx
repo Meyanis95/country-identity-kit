@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { Modal } from "./ProveModal";
 import styled from "styled-components";
-import { text } from "../utils";
+import { text } from "../util";
+import { useEffect, useContext } from "react";
+import { CountryIdentityContext } from "../hooks/useCountryIdentity";
 
 export const LogInWithCountryIdentity = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { state, startReq } = useContext(CountryIdentityContext);
+
+  useEffect(() => {
+    if (state.status === "logged-in") setIsModalOpen(false);
+  }, [state]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -16,14 +23,21 @@ export const LogInWithCountryIdentity = () => {
 
   return (
     <div>
-      <Btn onClick={openModal}>
-        {text("🌏", "Log In with Country Identity")}
-      </Btn>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        setIsModalOpen={setIsModalOpen}
-      ></Modal>
+      {(state.status === "logged-out" || state.status === "logging-in") && (
+        <div>
+          <Btn onClick={openModal}>
+            {text("🌏", "Log In with Country Identity")}
+          </Btn>
+          <Modal isOpen={isModalOpen} onClose={closeModal}></Modal>
+        </div>
+      )}
+      {state.status === "logged-in" && (
+        <div>
+          <Btn onClick={() => startReq({ type: "logout" })}>
+            {text("🌏", "Log Out")}
+          </Btn>
+        </div>
+      )}
     </div>
   );
 };

@@ -25,7 +25,7 @@ export type CountryIdentityRequest =
   | { type: "logout" };
 
 export type CountryIdentityState = {
-  /** Whether the user is logged in. @see ZupassLoginButton */
+  /** Whether the user is logged in. @see ProveButton */
   status: "logged-out" | "logged-in" | "logging-in";
 } & (
   | {
