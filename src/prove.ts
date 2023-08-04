@@ -1,24 +1,26 @@
+import { SerializedPCD } from '@pcd/pcd-types'
 import {
   prove,
   PCDInitArgs,
   init,
   IdentityPCDArgs,
   serialize,
-} from "pcd-country-identity";
+  IdentityPCD,
+} from 'pcd-country-identity'
 
 export const proveWithWebProver = async (
-  pcdArgs: IdentityPCDArgs
-): Promise<{ pcd: any; serialized: any }> => {
+  pcdArgs: IdentityPCDArgs,
+): Promise<{ pcd: IdentityPCD; serialized: SerializedPCD<IdentityPCD> }> => {
   const pcdInitArgs: PCDInitArgs = {
-    wasmURL: "https://d3dxq5smiosdl4.cloudfront.net/main.wasm",
-    zkeyURL: "https://d3dxq5smiosdl4.cloudfront.net/circuit_final.zkey",
+    wasmURL: 'https://d3dxq5smiosdl4.cloudfront.net/main.wasm',
+    zkeyURL: 'https://d3dxq5smiosdl4.cloudfront.net/circuit_final.zkey',
     isWebEnv: true,
-  };
+  }
 
-  await init(pcdInitArgs);
+  await init(pcdInitArgs)
 
-  const pcd = await prove(pcdArgs);
-  const serialized = await serialize(pcd);
+  const pcd = await prove(pcdArgs)
+  const serialized = await serialize(pcd)
 
-  return { pcd, serialized };
-};
+  return { pcd, serialized }
+}

@@ -2,19 +2,19 @@ import {
   constructPassportPcdProveAndAddRequestUrl,
   openPassportPopup,
   useSerializedPCD,
-} from "@pcd/passport-interface";
-import { IdentityPCDPackage } from "pcd-country-identity";
-import { ArgumentTypeName } from "@pcd/pcd-types";
-import { useEffect } from "react";
+} from '@pcd/passport-interface'
+import { IdentityPCDPackage } from 'pcd-country-identity'
+import { ArgumentTypeName } from '@pcd/pcd-types'
+import { useEffect } from 'react'
 
-export const PCDPASS_URL = "http://localhost:3000/";
+export const PCDPASS_URL = 'http://localhost:3000/'
 
 export function requestIdentitypProof(args: {
-  msgBigInt: bigint;
-  sigBigInt: bigint;
-  modulusBigInt: bigint;
+  msgBigInt: bigint
+  sigBigInt: bigint
+  modulusBigInt: bigint
 }) {
-  const popupUrl = window.location.origin + "/popup";
+  const popupUrl = window.location.origin + '/popup'
   const proofUrl = constructPassportPcdProveAndAddRequestUrl<
     typeof IdentityPCDPackage
   >(
@@ -26,45 +26,45 @@ export function requestIdentitypProof(args: {
         argumentType: ArgumentTypeName.BigInt,
         userProvided: false,
         value: args.msgBigInt?.toString(),
-        description: "",
+        description: '',
       },
       signature: {
         argumentType: ArgumentTypeName.BigInt,
         userProvided: false,
         value: args.sigBigInt?.toString(),
-        description: "",
+        description: '',
       },
       modulus: {
         argumentType: ArgumentTypeName.BigInt,
         userProvided: false,
         value: args.modulusBigInt?.toString(),
-        description: "",
+        description: '',
       },
     },
     {
       genericProveScreen: true,
-      description: "Generate a proof of identity using your Aadhaar card.",
-      title: "Identity Proof",
-    }
-  );
+      description: 'Generate a proof of identity using your Aadhaar card.',
+      title: 'Identity Proof',
+    },
+  )
 
-  openPassportPopup(popupUrl, proofUrl);
+  openPassportPopup(popupUrl, proofUrl)
 }
 
 export function useIdentityProof(
   pcdStr: string,
-  onVerified: (valid: boolean) => void
+  onVerified: (valid: boolean) => void,
 ) {
-  const identityPCD = useSerializedPCD(IdentityPCDPackage, pcdStr);
+  const identityPCD = useSerializedPCD(IdentityPCDPackage, pcdStr)
 
   useEffect(() => {
     if (identityPCD) {
-      const { verify } = IdentityPCDPackage;
-      verify(identityPCD).then(onVerified);
+      const { verify } = IdentityPCDPackage
+      verify(identityPCD).then(onVerified)
     }
-  }, [identityPCD, onVerified]);
+  }, [identityPCD, onVerified])
 
   return {
     proof: identityPCD?.proof,
-  };
+  }
 }
