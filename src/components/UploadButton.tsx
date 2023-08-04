@@ -24,4 +24,6 @@ const InputFile = styled.div`
   color: #111827;
   background-color: #f9fafb;
   cursor: pointer;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;

@@ -94,6 +94,7 @@ export function serialize(state: CountryIdentityState): string {
     serState = {
       status,
       serializedPCD: state.serializedPCD,
+      pcd: state.pcd,
     };
   } else {
     serState = {
@@ -122,9 +123,11 @@ export async function parseAndValidate(
   }
 
   // Parse and validate PCD and accompanying metadata.
-  const { status, serializedPCD } = stored;
+  const { status, serializedPCD, pcd } = stored;
   if (serializedPCD == null) {
     throw new Error(`Missing serialized PCD`);
+  } else if (pcd == null) {
+    throw new Error(`Missing PCD`);
   } else if (serializedPCD.type !== IdentityPCDPackage.name) {
     throw new Error(`Invalid PCD type ${serializedPCD.type}`);
   }
@@ -132,6 +135,7 @@ export async function parseAndValidate(
   return {
     status,
     pcd: await IdentityPCDPackage.deserialize(serializedPCD.pcd),
+    serializedPCD: serializedPCD,
   };
 }
 

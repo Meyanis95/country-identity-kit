@@ -22,7 +22,6 @@ export const pdfUpload = (
       try {
         const fileReader = new FileReader();
         fileReader.readAsBinaryString(e.target.files[0]);
-        const userFilename = e.target.files[0].name;
         fileReader.onload = (e) => {
           if (e.target) {
             try {
@@ -133,7 +132,6 @@ export const cerUpload = async (
       try {
         const fileReader = new FileReader();
         fileReader.readAsArrayBuffer(e.target.files[0]);
-        const userFilename = e.target.files[0].name;
         fileReader.onload = (e) => {
           if (e.target && pdfStatus == AdhaarPdfValidation.SIGNATURE_PRESENT) {
             try {
@@ -141,8 +139,6 @@ export const cerUpload = async (
                 e.target.result as Buffer
               );
 
-              // setx509Certificate(cer);
-              // (window as any) to avoid typescript complaining
               const cert = (forge as any).pki.certificateFromPem(
                 cer.toString("pem")
               );
