@@ -1,50 +1,50 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
-import styled from "styled-components";
-import { FileInput } from "./UploadButton";
-import { ProveButton } from "./ProveButton";
-import { pdfUpload, cerUpload } from "../util";
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { FileInput } from './UploadButton'
+import { ProveButton } from './ProveButton'
+import { pdfUpload, cerUpload } from '../util'
 import {
   AdhaarPdfValidation,
   AdhaarSignatureValidition,
   AdhaarCertificateValidation,
-} from "../interface";
+} from '../interface'
 
 interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 export const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-  const [signedPdfData, setSignedPdfData] = useState(Buffer.from([]));
-  const [signature, setSignature] = useState("");
-  const [msgBigInt, setMsgBigInt] = useState<bigint>();
-  const [sigBigInt, setSigBigInt] = useState<bigint>();
-  const [modulusBigInt, setModulusBigInt] = useState<bigint>();
-  const [pdfStatus, setpdfStatus] = useState<"" | AdhaarPdfValidation>("");
+  const [signedPdfData, setSignedPdfData] = useState(Buffer.from([]))
+  const [signature, setSignature] = useState('')
+  const [msgBigInt, setMsgBigInt] = useState<bigint>()
+  const [sigBigInt, setSigBigInt] = useState<bigint>()
+  const [modulusBigInt, setModulusBigInt] = useState<bigint>()
+  const [pdfStatus, setpdfStatus] = useState<'' | AdhaarPdfValidation>('')
   const [signatureValidity, setsignatureValidity] = useState<
-    "" | AdhaarSignatureValidition
-  >("");
+    '' | AdhaarSignatureValidition
+  >('')
   const [certificateStatus, setcertificateStatus] = useState<
-    "" | AdhaarCertificateValidation
-  >("");
+    '' | AdhaarCertificateValidation
+  >('')
 
   const certificateOrSignatureStatus =
     certificateStatus ==
       AdhaarCertificateValidation.ERROR_PARSING_CERTIFICATE ||
-    certificateStatus == "" ||
+    certificateStatus == '' ||
     certificateStatus == AdhaarCertificateValidation.NO_PDF_UPLOADED
       ? certificateStatus
-      : signatureValidity;
+      : signatureValidity
 
   const handlePdfChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { signature, signedData } = await pdfUpload(
       e,
       setpdfStatus,
-      setsignatureValidity
-    );
-    setSignature(signature);
-    setSignedPdfData(signedData);
-  };
+      setsignatureValidity,
+    )
+    setSignature(signature)
+    setSignedPdfData(signedData)
+  }
 
   const handleCerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { msgBigInt, sigBigInt, modulusBigInt } = await cerUpload(
@@ -53,16 +53,16 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       signature,
       pdfStatus,
       setcertificateStatus,
-      setsignatureValidity
-    );
+      setsignatureValidity,
+    )
 
-    setMsgBigInt(msgBigInt);
-    setSigBigInt(sigBigInt);
-    setModulusBigInt(modulusBigInt);
-  };
+    setMsgBigInt(msgBigInt)
+    setSigBigInt(sigBigInt)
+    setModulusBigInt(modulusBigInt)
+  }
   return isOpen ? (
     <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+      <ModalContent onClick={e => e.stopPropagation()}>
         <TitleSection>
           <p>Prove your Identity with your Aadhar card</p>
         </TitleSection>
@@ -88,10 +88,10 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         />
       </ModalContent>
     </ModalOverlay>
-  ) : null;
-};
+  ) : null
+}
 
-export default Modal;
+export default Modal
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -104,7 +104,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 9999; /* Ensure the modal appears on top of other elements */
-`;
+`
 
 const ModalContent = styled.div`
   /* Modal styles common to both desktop and mobile */
@@ -135,18 +135,18 @@ const ModalContent = styled.div`
     width: 80%; /* Adjust the percentage as needed */
     max-width: 400px; /* Set a maximum width for desktop */
   }
-`;
+`
 
 const UploadFile = styled.div`
   margin-top: 10px;
   margin-bottom: 10px;
-`;
+`
 
 const DocumentResult = styled.div`
   position: absolute;
   font-size: 0.875rem;
   margin-top: 4px;
-`;
+`
 
 const TitleSection = styled.div`
   flex-shrink: 0;
@@ -154,16 +154,16 @@ const TitleSection = styled.div`
   margin-right: auto;
   font-size: medium;
   font-weight: bold;
-`;
+`
 
 const UploadSection = styled.div`
   display: grid;
   row-gap: 20px;
-`;
+`
 
 const Label = styled.div`
   margin-bottom: 0.5rem;
   line-height: 1.25rem;
   font-weight: 500;
   color: #111827;
-`;
+`
