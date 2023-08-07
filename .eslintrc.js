@@ -22,7 +22,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.ts', '.tsx'] }],
   },
-  ignorePatterns: ['build', 'script/*.mjs', 'circom-rsa-verify', 'dist'],
+  ignorePatterns: ['dist', 'mocha.cjs'],
   settings: {
     react: {
       version: 'detect',

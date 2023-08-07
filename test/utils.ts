@@ -1,4 +1,8 @@
 import { subtle } from 'crypto'
+import {
+  CountryIdentityState,
+  CountryIdentityRequest,
+} from '../src/hooks/useCountryIdentity'
 
 function buffToBigInt(buff: string): bigint {
   return BigInt('0x' + Buffer.from(buff, 'base64url').toString('hex'))
@@ -46,4 +50,20 @@ export async function genData(
   const sign = BigInt('0x' + Buffer.from(sign_buff).toString('hex'))
 
   return [e, sign, n, hash]
+}
+
+// Serialize the context value to a JSON string
+export function serializeContextValue(contextValue: {
+  state: CountryIdentityState
+  startReq: (request: CountryIdentityRequest) => void
+}): string {
+  return JSON.stringify(contextValue)
+}
+
+// Deserialize the JSON string to the context value object
+export function deserializeContextValue(serializedContextValue: string): {
+  state: CountryIdentityState
+  startReq: (request: CountryIdentityRequest) => void
+} {
+  return JSON.parse(serializedContextValue)
 }

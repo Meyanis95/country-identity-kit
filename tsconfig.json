@@ -13,5 +13,6 @@
     "jsx": "react-jsx",
     "noUnusedParameters": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "enzyme.d.ts"],
+  "exclude": ["mocha.cjs"]
 }
