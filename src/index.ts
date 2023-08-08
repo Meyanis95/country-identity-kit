@@ -1,11 +1,11 @@
 import { LogInWithCountryIdentity } from './components/LogInWithCountryIdentityButton'
 import { useCountryIdentity } from './hooks/useCountryIdentity'
 import { CountryIdentityProvider } from './provider/countryIdentityProvider'
-import { CollapsableCode } from './components/Core'
+import { Proof } from './components/Proof'
 
 export {
   LogInWithCountryIdentity,
   useCountryIdentity,
   CountryIdentityProvider,
-  CollapsableCode,
+  Proof,
 }

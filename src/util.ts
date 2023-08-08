@@ -2,9 +2,9 @@ import { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import * as peculiarX509 from '@peculiar/x509'
 import * as forge from 'node-forge'
 import {
-  AdhaarPdfValidation,
-  AdhaarSignatureValidition,
-  AdhaarCertificateValidation,
+  AadhaarPdfValidation,
+  AadhaarSignatureValidition,
+  AadhaarCertificateValidation,
 } from './interface'
 
 /**
@@ -14,9 +14,9 @@ import {
  */
 export const pdfUpload = (
   e: ChangeEvent<HTMLInputElement>,
-  setpdfStatus: Dispatch<SetStateAction<'' | AdhaarPdfValidation>>,
+  setpdfStatus: Dispatch<SetStateAction<'' | AadhaarPdfValidation>>,
   setsignatureValidity: Dispatch<
-    SetStateAction<'' | AdhaarSignatureValidition>
+    SetStateAction<'' | AadhaarSignatureValidition>
   >,
 ): Promise<{ signature: string; signedData: Buffer }> => {
   return new Promise((resolve, reject) => {
@@ -38,12 +38,12 @@ export const pdfUpload = (
                     .value as string,
                   signedData,
                 })
-                setpdfStatus(AdhaarPdfValidation.SIGNATURE_PRESENT)
+                setpdfStatus(AadhaarPdfValidation.SIGNATURE_PRESENT)
               } else {
-                setpdfStatus(AdhaarPdfValidation.SIGNATURE_NOT_PRESENT)
+                setpdfStatus(AadhaarPdfValidation.SIGNATURE_NOT_PRESENT)
               }
             } catch (error) {
-              setpdfStatus(AdhaarPdfValidation.ERROR_PARSING_PDF)
+              setpdfStatus(AadhaarPdfValidation.ERROR_PARSING_PDF)
               reject(error)
             }
           }
@@ -118,12 +118,12 @@ export const cerUpload = async (
   e: ChangeEvent<HTMLInputElement>,
   signedPdfData: Buffer,
   signature: string,
-  pdfStatus: '' | AdhaarPdfValidation,
+  pdfStatus: '' | AadhaarPdfValidation,
   setcertificateStatus: Dispatch<
-    SetStateAction<'' | AdhaarCertificateValidation>
+    SetStateAction<'' | AadhaarCertificateValidation>
   >,
   setsignatureValidity: Dispatch<
-    SetStateAction<'' | AdhaarSignatureValidition>
+    SetStateAction<'' | AadhaarSignatureValidition>
   >,
 ): Promise<{ msgBigInt: bigint; sigBigInt: bigint; modulusBigInt: bigint }> => {
   return new Promise((resolve, reject) => {
@@ -132,7 +132,7 @@ export const cerUpload = async (
         const fileReader = new FileReader()
         fileReader.readAsArrayBuffer(e.target.files[0])
         fileReader.onload = e => {
-          if (e.target && pdfStatus == AdhaarPdfValidation.SIGNATURE_PRESENT) {
+          if (e.target && pdfStatus == AadhaarPdfValidation.SIGNATURE_PRESENT) {
             try {
               const cer = new peculiarX509.X509Certificate(
                 e.target.result as Buffer,
@@ -164,34 +164,34 @@ export const cerUpload = async (
                 const modulusBigInt = BigInt(
                   '0x' + cert.publicKey.n.toString(16),
                 )
-                setsignatureValidity(AdhaarSignatureValidition.SIGNATURE_VALID)
+                setsignatureValidity(AadhaarSignatureValidition.SIGNATURE_VALID)
                 setcertificateStatus(
-                  AdhaarCertificateValidation.CERTIFICATE_CORRECTLY_FORMATTED,
+                  AadhaarCertificateValidation.CERTIFICATE_CORRECTLY_FORMATTED,
                 )
                 resolve({ msgBigInt, sigBigInt, modulusBigInt })
               } else {
                 setsignatureValidity(
-                  AdhaarSignatureValidition.SIGNATURE_INVALID,
+                  AadhaarSignatureValidition.SIGNATURE_INVALID,
                 )
                 setcertificateStatus(
-                  AdhaarCertificateValidation.CERTIFICATE_CORRECTLY_FORMATTED,
+                  AadhaarCertificateValidation.CERTIFICATE_CORRECTLY_FORMATTED,
                 )
                 reject()
               }
             } catch (error) {
-              setsignatureValidity(AdhaarSignatureValidition.SIGNATURE_INVALID)
+              setsignatureValidity(AadhaarSignatureValidition.SIGNATURE_INVALID)
               setcertificateStatus(
-                AdhaarCertificateValidation.ERROR_PARSING_CERTIFICATE,
+                AadhaarCertificateValidation.ERROR_PARSING_CERTIFICATE,
               )
               reject()
             }
           } else {
-            setcertificateStatus(AdhaarCertificateValidation.NO_PDF_UPLOADED)
+            setcertificateStatus(AadhaarCertificateValidation.NO_PDF_UPLOADED)
             reject()
           }
         }
       } catch (error) {
-        setsignatureValidity(AdhaarSignatureValidition.SIGNATURE_INVALID)
+        setsignatureValidity(AadhaarSignatureValidition.SIGNATURE_INVALID)
         setcertificateStatus('')
         reject()
       }

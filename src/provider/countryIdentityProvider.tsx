@@ -9,6 +9,19 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { proveWithWebProver } from '../prove'
 import { SerializedPCD } from '@pcd/pcd-types'
 
+/**
+ * CountryIdentityProvider is a React component that serves as a provider for the
+ * CountryIdentityContext. It manages the authentication state, login requests,
+ * and communication with the proving component. This provider initializes the
+ * authentication state from local storage on page load and handles updates to
+ * the state when login requests are made and when new proofs are received.
+ *
+ * @param props - Props for the CountryIdentityProvider component.
+ *   - children: The child components that will have access to the provided context.
+ *
+ * @returns A JSX element that wraps the provided child components with the
+ * CountryIdentityContext.Provider.
+ */
 export function CountryIdentityProvider(props: { children: ReactNode }) {
   // Read state from local storage on page load
   const [pcdStr, setPcdStr] = useState<SerializedPCD<IdentityPCD> | ''>('')
@@ -36,7 +49,7 @@ export function CountryIdentityProvider(props: { children: ReactNode }) {
     [setAndWriteState, setPcdStr, setPcd],
   )
 
-  // Receive PCDs from passport popup
+  // Receive PCD from proving component
   React.useEffect(() => {
     if (pcdStr === '' || pcd === '') return
     console.log(`[COUNTRY-IDENTITY] trying to log in with ${pcdStr}`)
@@ -150,7 +163,7 @@ function shallowToString(obj: unknown) {
   })
 }
 
-/** Pops up the passport, requesting a login. Returns a `logging-in` state */
+/** Start a login request. Returns a `logging-in` state */
 function handleLoginReq(
   request: CountryIdentityRequest,
   setPcdStr: Dispatch<SetStateAction<SerializedPCD<IdentityPCD> | ''>>,

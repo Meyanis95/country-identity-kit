@@ -1,16 +1,16 @@
-import { IdentityPCDArgs } from "pcd-country-identity";
-import { ArgumentTypeName } from "@pcd/pcd-types";
-import styled from "styled-components";
-import { useContext } from "react";
-import { CountryIdentityContext } from "../hooks/useCountryIdentity";
-import { Spinner } from "./LoadingSpinner";
-import { AdhaarSignatureValidition } from "../interface";
+import { IdentityPCDArgs } from 'pcd-country-identity'
+import { ArgumentTypeName } from '@pcd/pcd-types'
+import styled from 'styled-components'
+import { useContext } from 'react'
+import { CountryIdentityContext } from '../hooks/useCountryIdentity'
+import { Spinner } from './LoadingSpinner'
+import { AadhaarSignatureValidition } from '../interface'
 
 interface ProveButtonProps {
-  msgBigInt?: bigint;
-  modulusBigInt?: bigint;
-  sigBigInt?: bigint;
-  signatureValidity: "" | AdhaarSignatureValidition;
+  msgBigInt?: bigint
+  modulusBigInt?: bigint
+  sigBigInt?: bigint
+  signatureValidity: '' | AadhaarSignatureValidition
 }
 
 export const ProveButton: React.FC<ProveButtonProps> = ({
@@ -19,55 +19,55 @@ export const ProveButton: React.FC<ProveButtonProps> = ({
   sigBigInt,
   signatureValidity,
 }) => {
-  const { state, startReq } = useContext(CountryIdentityContext);
+  const { state, startReq } = useContext(CountryIdentityContext)
 
   const args: IdentityPCDArgs = {
     base_message: {
       argumentType: ArgumentTypeName.BigInt,
       userProvided: false,
       value: msgBigInt?.toString(),
-      description: "",
+      description: '',
     },
     signature: {
       argumentType: ArgumentTypeName.BigInt,
       userProvided: false,
       value: sigBigInt?.toString(),
-      description: "",
+      description: '',
     },
     modulus: {
       argumentType: ArgumentTypeName.BigInt,
       userProvided: false,
       value: modulusBigInt?.toString(),
-      description: "",
+      description: '',
     },
-  };
+  }
 
   return (() => {
     switch (state.status) {
-      case "logged-out":
+      case 'logged-out':
         return (
           <Btn
             disabled={
-              !(signatureValidity == AdhaarSignatureValidition.SIGNATURE_VALID)
+              !(signatureValidity == AadhaarSignatureValidition.SIGNATURE_VALID)
             }
             onClick={() => {
-              startReq({ type: "login", args });
+              startReq({ type: 'login', args })
             }}
           >
             Request Identity Proof
           </Btn>
-        );
-      case "logging-in":
+        )
+      case 'logging-in':
         return (
           <Btn>
             Generating proof...
-            {"\u2003"}
+            {'\u2003'}
             <Spinner />
           </Btn>
-        );
+        )
     }
-  })();
-};
+  })()
+}
 
 const Btn = styled.button`
   display: flex;
@@ -99,4 +99,4 @@ const Btn = styled.button`
     background: #e8e8e8;
     cursor: default;
   }
-`;
+`

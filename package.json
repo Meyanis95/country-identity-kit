@@ -4,16 +4,15 @@
   "description": "Frontend component kit for the country identity pcd package",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "scripts": {
     "build": "tsup src/index.ts --dts",
     "dev": "tsup src/index.ts --dts --watch",
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
-    "test": "npx ts-mocha -p tsconfig.json test/**/*.test.{ts,tsx} --exit",
+    "test": "TS_NODE_COMPILER_OPTIONS={\\\"module\\\":\\\"commonjs\\\"} npx ts-mocha -p tsconfig.json test/**/*.test.{ts,tsx} --exit",
     "prepare": "husky install",
     "pre-publish": "yarn build && yarn lint && yarn test && npm publish --dry-run",
-    "publish": "yarn build && yarn lint && yarn test && npm publish"
+    "npm-publish": "yarn build && yarn lint && yarn test && npm publish"
   },
   "files": [
     "./src/*",

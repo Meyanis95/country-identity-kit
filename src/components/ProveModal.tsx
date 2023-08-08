@@ -4,9 +4,9 @@ import { FileInput } from './UploadButton'
 import { ProveButton } from './ProveButton'
 import { pdfUpload, cerUpload } from '../util'
 import {
-  AdhaarPdfValidation,
-  AdhaarSignatureValidition,
-  AdhaarCertificateValidation,
+  AadhaarPdfValidation,
+  AadhaarSignatureValidition,
+  AadhaarCertificateValidation,
 } from '../interface'
 
 interface ModalProps {
@@ -20,19 +20,19 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [msgBigInt, setMsgBigInt] = useState<bigint>()
   const [sigBigInt, setSigBigInt] = useState<bigint>()
   const [modulusBigInt, setModulusBigInt] = useState<bigint>()
-  const [pdfStatus, setpdfStatus] = useState<'' | AdhaarPdfValidation>('')
+  const [pdfStatus, setpdfStatus] = useState<'' | AadhaarPdfValidation>('')
   const [signatureValidity, setsignatureValidity] = useState<
-    '' | AdhaarSignatureValidition
+    '' | AadhaarSignatureValidition
   >('')
   const [certificateStatus, setcertificateStatus] = useState<
-    '' | AdhaarCertificateValidation
+    '' | AadhaarCertificateValidation
   >('')
 
   const certificateOrSignatureStatus =
     certificateStatus ==
-      AdhaarCertificateValidation.ERROR_PARSING_CERTIFICATE ||
+      AadhaarCertificateValidation.ERROR_PARSING_CERTIFICATE ||
     certificateStatus == '' ||
-    certificateStatus == AdhaarCertificateValidation.NO_PDF_UPLOADED
+    certificateStatus == AadhaarCertificateValidation.NO_PDF_UPLOADED
       ? certificateStatus
       : signatureValidity
 
