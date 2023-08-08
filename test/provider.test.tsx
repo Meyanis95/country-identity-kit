@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { expect, assert } from 'chai'
+import { assert } from 'chai'
 import { CountryIdentityProvider } from '../src/provider/CountryIdentityProvider'
 import { IdentityPCDArgs } from 'pcd-country-identity'
 import { render, screen } from '@testing-library/react'
@@ -16,7 +16,7 @@ describe('CountryIdentityProvider', () => {
       </CountryIdentityProvider>,
     )
 
-    expect(screen.getByText('Test Children')).to.be.not.null
+    assert(screen.getByText('Test Children') != null, 'Should not be null')
   })
 
   it('initializes with logged-out status', () => {
@@ -30,7 +30,7 @@ describe('CountryIdentityProvider', () => {
 
     if (serializedContextValue) {
       const contextValue = JSON.parse(serializedContextValue)
-      expect(contextValue.state.status).deep.equal('logged-out')
+      assert(contextValue.state.status === 'logged-out', 'Should be logged-out')
     }
   })
 
@@ -68,7 +68,6 @@ describe('CountryIdentityProvider', () => {
       }
 
       // Simulate the login action
-      // fireEvent.click(screen.getByText('Login'));
       contextValue.startReq({ type: 'login', args: pcdArgs })
 
       // Access the context value after the action

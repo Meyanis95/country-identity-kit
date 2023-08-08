@@ -10,7 +10,8 @@
     "dev": "tsup src/index.ts --dts --watch",
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
-    "test": "npx ts-mocha -p tsconfig.json test/**/*.test.{ts,tsx} --exit"
+    "test": "npx ts-mocha -p tsconfig.json test/**/*.test.{ts,tsx} --exit",
+    "prepare": "husky install"
   },
   "author": "Yanis Meziane for PSE",
   "license": "MIT",
@@ -47,6 +48,7 @@
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-react": "^7.33.1",
     "global-jsdom": "^9.1.0",
+    "husky": "^8.0.3",
     "ignore-styles": "^5.0.1",
     "jsdom": "^22.1.0",
     "mocha": "^10.2.0",
