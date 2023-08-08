@@ -11,8 +11,17 @@
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --ignore-path .prettierignore --write \"**/*.+(js|ts|json)\"",
     "test": "npx ts-mocha -p tsconfig.json test/**/*.test.{ts,tsx} --exit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "pre-publish": "yarn build && yarn lint && yarn test && npm publish --dry-run",
+    "publish": "yarn build && yarn lint && yarn test && npm publish"
   },
+  "files": [
+    "./src/*",
+    "./dist/*",
+    "./README.md",
+    "tsconfig.json",
+    "package.json"
+  ],
   "author": "Yanis Meziane for PSE",
   "license": "MIT",
   "dependencies": {
